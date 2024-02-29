@@ -17,7 +17,7 @@ import {
     IServerParseEvent, 
 } from "./types/events"
 
-declare module vikhola {
+declare module "vikhola" {
 
     type TServerOptions = Pick<Config<any>, 'allowUnsafeRegex' | 'caseSensitive' | 'ignoreDuplicateSlashes' | 'ignoreTrailingSlash' | 'maxParamLength' >
     

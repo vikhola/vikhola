@@ -23,13 +23,13 @@ $ npm i vikhola
 Package could be required as ES6 module 
 
 ```js
-import { EventEmitter } from 'vikhola';
+import { Server } from 'vikhola';
 ```
 
 Or as commonJS module.
 
 ```js
-const { EventEmitter } = require('vikhola');
+const { Server } = require('vikhola');
 ```
 
 ## First Server
