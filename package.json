@@ -1,0 +1,44 @@
+{
+  "name": "vikhola",
+  "version": "1.0.0",
+  "description": "Event-driven framework for HTTP applications",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test",
+    "types": "types"
+  },
+  "dependencies": {
+    "@vikhola/cookies": "^1.0.0",
+    "@vikhola/events": "^1.0.0",
+    "bytes": "^3.1.2",
+    "fast-json-stringify": "^5.10.0",
+    "fast-uri": "^2.3.0",
+    "find-my-way": "^8.1.0"
+  },
+  "scripts": {
+    "test": "node --test ./test/*.test.js"
+  },
+  "keywords": [
+    "events",
+    "pubsub",
+    "tiny",
+    "typed",
+    "web",
+    "app",
+    "http",
+    "framework",
+    "open"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vikhola/vikhola"
+  },
+  "homepage": "https://github.com/vikhola/vikhola",
+  "author": "<sabaziosd@proton.me> (https://github.com/SabaziosD)",
+  "license": "MIT",
+  "types": "./index.d.ts",
+  "devDependencies": {
+    "@types/node": "^20.11.23"
+  }
+}
