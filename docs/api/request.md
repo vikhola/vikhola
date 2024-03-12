@@ -53,13 +53,12 @@ console.log(request.raw);
                 request.body
             </td>
             <td>
-                The "body" property by default returns an incoming HTTP request from the Node.js core, the contents of which can be parsed. If the contents of the request were parsed during "kernel.parse", this property will return a parsed version of it.
+                The "body" property by default is undefined. If the contents of the request were parsed during "kernel.parse", this property will return a parsed version of it.
             </td>
             <td>
                 <pre>
 /**
-* print: IncomingMessage {
-* ...
+* print: undefined
 */
 console.log(request.body);
                 </pre>

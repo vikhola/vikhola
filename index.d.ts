@@ -54,7 +54,7 @@ declare module "vikhola" {
         off(eventName: string | symbol, listener: TEventTargetListener): this
         eventNames(): (string | symbol)[];
         listeners(eventName: string | symbol): TListenerEntry[];
-        rawListeners(eventName: string | symbol | IEventTargetEvent): IEventEmitterListenerBucket[];
+        rawListeners(eventName: string | symbol): IEventEmitterListenerBucket[];
         listenerCount(eventName: string | symbol): number;
         removeAllListeners(eventName?: string | symbol | undefined): this;
         emit(event: IEventTargetEvent): Promise<boolean>;

@@ -100,13 +100,11 @@ describe('PrepareRequestCommand test', function() {
         const aFeaturesMock = new FeaturesMock()
         const aPrepareRequestCommand = new PrepareRequestCommand(aFeaturesMock)
 
-        aFeaturesMock.requestBody.content = 'bar'
-
         const aParseListener = t.mock.fn((event) => {
             assert.strictEqual(event instanceof ParseEvent, true)
-            assert.strictEqual(event.body, 'bar')
-            assert.strictEqual(event.headers, aFeaturesMock.request.headers)
             assert.strictEqual(event.target, aFeaturesMock.target)
+            assert.strictEqual(event.request, aFeaturesMock.request)
+            assert.strictEqual(event.body, aFeaturesMock.request.raw)
 
             event.body = (expected)
         })
@@ -391,9 +389,9 @@ describe('PrepareResponseCommand test', function() {
 
         const aSerializationListener = t.mock.fn((event) => {
             assert.strictEqual(event instanceof SerializationEvent, true)
-            assert.strictEqual(event.body, aFeaturesMock.responseBody.content)
-            assert.strictEqual(event.headers, aFeaturesMock.response.headers)
             assert.strictEqual(event.target, aFeaturesMock.target)
+            assert.strictEqual(event.response, aFeaturesMock.response)
+            assert.strictEqual(event.body, expected)
 
             event.body = JSON.stringify(event.body)
         })
@@ -530,6 +528,7 @@ describe('"WritingCommand"', function() {
 
         const aTrailersListener = t.mock.fn(event => {
             assert.strictEqual(event instanceof TrailersEvent, true)
+            assert.strictEqual(event.response, aFeaturesMock.response)
             assert.strictEqual(Object.isSealed(event.trailers), true)
             event.trailers.foo = 'bar'
             event.trailers.bar = 'foo'

@@ -2,12 +2,11 @@
 
 # Parsing
 
-When the server receives a request, it sets up a request body as the incoming message, which contains the content and from which it can be parsed.
+When the server receives a request, it sets the request body to undefined until no handler can parse it.
 
 ```js
 server.get('/', function(request, response) {
-	// print: IncomingMessage {
-	//  ...
+	// print: undefined
 	console.log(request.body);
 })
 ```

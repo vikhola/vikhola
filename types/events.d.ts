@@ -1,8 +1,6 @@
 import { IEventTargetEvent, IEventTarget } from "./target"
 import { IHttpRequest } from "./request"
 import { IHttpResponse } from "./response"
-import { IHttpHeaders } from "./headers"
-import { IHttpTrailers } from "./trailers"
 
 interface IServerEvent extends IEventTargetEvent {
     /**
@@ -76,9 +74,9 @@ export interface IServerParseEvent extends IServerEvent {
      */
     body: unknown
     /**
-     * The `headers` property return the request headers.
+     * The `request` property return current context request.
      */
-    readonly headers: IHttpHeaders
+    readonly request: IHttpRequest
 }
 
 export interface IServerSerializeEvent extends IServerEvent {
@@ -88,23 +86,19 @@ export interface IServerSerializeEvent extends IServerEvent {
      */
     body: unknown
     /**
-     * The `headers` property return the response headers.
+     * The `response` property return current context response.
      */
-    readonly headers: IHttpHeaders
+    readonly response: IHttpResponse
 }
 
 export interface IServerTrailersEvent extends IServerEvent {
     readonly name: "kernel.trailers"
     /**
-     * The `body` property return the response body.
+     * The `response` property return current context response.
      */
-    readonly body: unknown
-    /**
-     * The `headers` property return the response headers.
-     */
-    readonly headers: IHttpHeaders
+    readonly response: IHttpResponse
     /**
      * The `trailers` property return the response trailers.
      */
-    readonly trailers: IHttpTrailers
+    readonly trailers: { [k: string]: any }
 }

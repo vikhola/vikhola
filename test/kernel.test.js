@@ -224,7 +224,7 @@ describe('Kernel test', function() {
                 assert.strictEqual(aParseListener.mock.callCount(), 1)
             })
 
-            it('should set raw request as default body', async function(t) {
+            it('should set undefined as default body', async function(t) {
                 const aKernel = new Kernel(router())
                 const aRequest = new RequestMock
                 const aResponse = new ResponseMock(aRequest)
@@ -438,7 +438,7 @@ describe('Kernel test', function() {
                 const aRequest = new RequestMock
                 const aResponse = new ResponseMock(aRequest)
     
-                const aCriticalListener = t.mock.fn(event => console.log(event.error))
+                const aCriticalListener = t.mock.fn()
                 const aErrorListener = t.mock.fn(event => {
                     assert.strictEqual(event instanceof ErrorEvent, true)
                     assert.strictEqual(event.error, aError)

@@ -195,16 +195,23 @@ describe('ParseEvent test', function() {
         assert.strictEqual(anEvent.name, expected)
     })
 
-    it('"headers" field', function() {
-        const expected = {}
-        const anEvent = new ParseEvent(new ArgsMock({ headers: expected }))
+    it('"request" field', function() {
+        const expected = Symbol('request')
+        const anEvent = new ParseEvent(new ArgsMock({ request: expected }))
 
-        assert.strictEqual(anEvent.headers, expected)
-        anEvent.headers = {}
-        assert.strictEqual(anEvent.headers, expected)
+        assert.strictEqual(anEvent.request, expected)
+        anEvent.request = {}
+        assert.strictEqual(anEvent.request, expected)
     })
 
     describe('"body" field', function() {
+
+        it('should return raw request if no other body is defined', function() {
+            const expected = Symbol('raw')
+            const anEvent = new ParseEvent(new ArgsMock({ request: { raw: expected } }))
+
+            assert.strictEqual(anEvent.body, expected)
+        })
 
         it('should return current body content', function() {
             const expected = 'foo'
@@ -234,13 +241,19 @@ describe('SerializationEvent test', function() {
         assert.strictEqual(anEvent.name, expected)
     })
 
-    it('"headers" field', function() {
-        const expected = {}
-        const anEvent = new SerializationEvent(new ArgsMock({ headers: expected }))
+    it('"stopped" field', function() {
+        const aPipeline = { stopped: true }
+        const anEvent = new SerializationEvent(new ArgsMock({ pipeline: aPipeline }))
+        assert.strictEqual(anEvent.stopped, false)
+    })
 
-        assert.strictEqual(anEvent.headers, expected)
-        anEvent.headers = {}
-        assert.strictEqual(anEvent.headers, expected)
+    it('"response" field', function() {
+        const expected = Symbol('response')
+        const anEvent = new SerializationEvent(new ArgsMock({ response: expected }))
+
+        assert.strictEqual(anEvent.response, expected)
+        anEvent.response = {}
+        assert.strictEqual(anEvent.response, expected)
     })
 
     describe('"body" field', function() {
@@ -297,23 +310,19 @@ describe('TrailersEvent test', function() {
         assert.strictEqual(anEvent.name, expected)
     })
 
-    it('"headers" field', function() {
-        const expected = {}
-        const anEvent = new TrailersEvent(new ArgsMock({ headers: expected }))
-
-        assert.strictEqual(anEvent.headers, expected)
-        anEvent.headers = {}
-        assert.strictEqual(anEvent.headers, expected)
+    it('"stopped" field', function() {
+        const aPipeline = { stopped: true }
+        const anEvent = new TrailersEvent(new ArgsMock({ pipeline: aPipeline }))
+        assert.strictEqual(anEvent.stopped, false)
     })
 
-    it('"body" field', function() {
-        const expected = 'foo'
-        const aBody = { content: expected }
-        const anEvent = new TrailersEvent(new ArgsMock({ body: aBody }))
+    it('"response" field', function() {
+        const expected = Symbol('response')
+        const anEvent = new TrailersEvent(new ArgsMock({ response: expected }))
 
-        assert.strictEqual(anEvent.body, expected)
-        anEvent.body = 'bar'
-        assert.strictEqual(anEvent.body, expected)
+        assert.strictEqual(anEvent.response, expected)
+        anEvent.response = {}
+        assert.strictEqual(anEvent.response, expected)
     })
 
     it('"trailers" field', function() {
@@ -321,12 +330,6 @@ describe('TrailersEvent test', function() {
         const anEvent = new TrailersEvent(new ArgsMock({ trailers }))
 
         assert.strictEqual(anEvent.trailers, trailers)
-    })
-
-    it('"stopped" field', function() {
-        const aPipeline = { stopped: true }
-        const anEvent = new TrailersEvent(new ArgsMock({ pipeline: aPipeline }))
-        assert.strictEqual(anEvent.stopped, false)
     })
 
 })

@@ -48,6 +48,6 @@ export interface IEventTarget extends IEventEmitterInherim  {
     on(eventName: "kernel.critical", listener: TEventTargetListener<IServerCriticalEvent>, options?: IListenerOptions): this
     on(eventName: "kernel.finish", listener: TEventTargetListener<IServerFinishEvent>, options?: IListenerOptions): this
     off(eventName: string | symbol, listener: TEventTargetListener): this
-    rawListeners(eventName: string | symbol | IEventTargetEvent): IEventEmitterListenerBucket[];
+    rawListeners(eventName: string | symbol): IEventEmitterListenerBucket[];
     emit(event: IEventTargetEvent): Promise<boolean>
 }

@@ -203,6 +203,24 @@ console.log(event.stopped);
 		</tr>
 		<tr>
 			<td>
+				event.request
+			</td>
+			<td> 
+				The "request" property return reference to the current application request.
+			</td>
+			<td>
+				<pre> 
+/**
+* print: HttpRequest {
+*  ...
+* }
+*/
+console.log(event.request); 
+				</pre>
+			</td>
+		</tr>
+		<tr>
+			<td>
 				event.body
 			</td>
 			<td> 
@@ -217,24 +235,6 @@ console.log(event.stopped);
 * } 
 */
 event.body 
-				</pre>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				event.headers
-			</td>
-			<td> 
-				The "headers" property return a request headers.
-			</td>
-			<td>
-				<pre> 
-/**
-* print: HttpHeaders {
-*  ...
-* }
-*/
-event.headers
 				</pre>
 			</td>
 		</tr>
@@ -694,6 +694,24 @@ console.log(event.stopped);
 		</tr>
 		<tr>
 			<td>
+				event.response
+			</td>
+			<td> 
+				The "response" property return reference to the current application response.
+			</td>
+			<td>
+				<pre> 
+/**
+* print: HttpRequest {
+*  ...
+* }
+*/
+console.log(event.response); 
+				</pre>
+			</td>
+		</tr>
+		<tr>
+			<td>
 				event.body
 			</td>
 			<td> 
@@ -705,24 +723,6 @@ console.log(event.stopped);
 * print: { foo: 'bar' }
 */
 event.body 
-				</pre>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				event.headers
-			</td>
-			<td> 
-				The "headers" property return a response headers.
-			</td>
-			<td>
-				<pre> 
-/**
-* print: HttpHeaders {
-*  ...
-* }
-*/
-event.headers
 				</pre>
 			</td>
 		</tr>
@@ -810,35 +810,19 @@ console.log(event.stopped);
 		</tr>
 		<tr>
 			<td>
-				event.body
+				event.response
 			</td>
 			<td> 
-				The "body" property return a response body.
+				The "response" property return reference to the current application response.
 			</td>
 			<td>
 				<pre> 
 /**
-* print: 'foo'
-*/
-event.body 
-				</pre>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				event.headers
-			</td>
-			<td> 
-				The "headers" property return a response headers.
-			</td>
-			<td>
-				<pre> 
-/**
-* print: HttpHeaders {
+* print: HttpRequest {
 *  ...
 * }
 */
-event.headers
+console.log(event.response); 
 				</pre>
 			</td>
 		</tr>
@@ -847,7 +831,7 @@ event.headers
 				event.trailers
 			</td>
 			<td> 
-				The "trailers" property return a response trailers.
+				The "trailers" property returns response trailers that will be sent to the client side.
 			</td>
 			<td>
 				<pre> 
