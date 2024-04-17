@@ -50,7 +50,7 @@ class ResponseMock extends ServerResponse {
 
 }
 
-const sleep = (callback) => new Promise(resolve => setImmediate(_ => resolve(callback())))
+const sleep = (callback) => new Promise(resolve => process.nextTick(_ => resolve(callback())))
 
 describe('Kernel test', function() {
 

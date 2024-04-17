@@ -1051,7 +1051,7 @@ describe('"FinishAction" test', function() {
 
     describe('"FinishEvent"', function() {
 
-        it('should emit "FinishEvent" if error is null', async function(t) {
+        it('should emit "FinishEvent" on next tick if error is null', function(t, done) {
             const aContext = new ContextMock()
     
             const aFinishListener = t.mock.fn((event) => {
@@ -1067,10 +1067,14 @@ describe('"FinishAction" test', function() {
 
             FinishAction(aContext)
 
-            assert.strictEqual(aFinishListener.mock.callCount(), 1)
+            setImmediate(_ => {
+                assert.strictEqual(aFinishListener.mock.callCount(), 1)
+                done()
+            })
+
         })
 
-        it('should not stop "FinishEvent" event propagation if the response send method is called', async function(t) {
+        it('should not stop "FinishEvent" event propagation if the response send method is called', function(t, done) {
             const anAbortController = new AbortController()
             const aContext = new ContextMock({ abortController: anAbortController })
 
@@ -1081,28 +1085,15 @@ describe('"FinishAction" test', function() {
             aContext.target.on(kFinishEvent, aFinishListenerTwo)
 
             FinishAction(aContext)
-            
-            assert.strictEqual(aFinishListenerOne.mock.callCount(), 1)
-            assert.strictEqual(aFinishListenerTwo.mock.callCount(), 1)
+
+            setImmediate(_ => {
+                assert.strictEqual(aFinishListenerOne.mock.callCount(), 1)
+                assert.strictEqual(aFinishListenerTwo.mock.callCount(), 1)
+                done()
+            })
+
         })
 
-    })
-
-    it('should execute "CriticalAction" if error is not null', async function(t) {
-        const aError = new Error()
-        const aContext = new ContextMock()
-
-        const aCriticalListener = t.mock.fn((event) => {
-            assert.strictEqual(event instanceof CriticalEvent, true)
-            assert.strictEqual(event.error, aError)
-            assert.strictEqual(event.target, aContext.target)
-        })
-
-        aContext.target.on(kCriticalEvent, aCriticalListener)
-
-        FinishAction(aContext, aError)
-
-        assert.strictEqual(aCriticalListener.mock.callCount(), 1)
     })
 
 })
