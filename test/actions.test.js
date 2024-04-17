@@ -965,7 +965,7 @@ describe('"WritingAction"', function() {
         assert.strictEqual(aContext.response.raw.writableEnded, true)
     })
 
-    it('should call callback with serialization error if after event the response body has invalid type', async function(t) {
+    it('should call callback with error if after the serialization event the response body has invalid type', async function(t) {
         const aContext = new ContextMock()
         const aSerializeListener = t.mock.fn((event) => event.response.send({ a: 1 }))
 
@@ -974,7 +974,21 @@ describe('"WritingAction"', function() {
 
         await assert.rejects(
             _ => subscribe(WritingAction, aContext), 
-            { message: `Response body can be only type of "string", "buffer" or "stream", received "object".` }
+            { message: `Response body can be only type of "string", "buffer" or "stream".` }
+        )
+        
+    })
+
+    it('should call callback with error if after the serialization event the response body is null', async function(t) {
+        const aContext = new ContextMock()
+        const aSerializeListener = t.mock.fn((event) => event.body = undefined)
+
+        aContext.features.set(kResponseBody, { a: 1 })
+        aContext.target.on(kSerializeEvent, aSerializeListener)
+
+        await assert.rejects(
+            _ => subscribe(WritingAction, aContext), 
+            { message: `Response body can be only type of "string", "buffer" or "stream".` }
         )
         
     })
