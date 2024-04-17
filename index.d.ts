@@ -3,7 +3,7 @@ import { ListenOptions } from "net";
 import { IncomingMessage, Server as NodeServer, ServerResponse } from "http";
 import { IEventEmitterListenerBucket, IListenerOptions,TListenerEntry } from "@vikhola/events";
 import { IServer, THTTPMethod, THandler } from "./types/server";
-import { IEventTarget, IEventTargetEvent, TEventTargetListener } from "./types/target";
+import { IEmitter, IEmitterEvent, TEmitterListener } from "./types/target";
 import {
     IServerRequestEvent, 
     IServerControllerEvent, 
@@ -31,33 +31,33 @@ declare module "vikhola" {
          */
         constructor(options?: TServerOptions)
     
-        get(path: string, handler: THandler): IEventTarget;
-        post(path: string, handler: THandler): IEventTarget;
-        put(path: string, handler: THandler): IEventTarget;
-        delete(path: string, handler: THandler): IEventTarget;
-        head(path: string, handler: THandler): IEventTarget;
-        options(path: string, handler: THandler): IEventTarget;
-        patch(path: string, handler: THandler): IEventTarget;
-        route(method: THTTPMethod, route: string, handler: THandler): IEventTarget;
+        get(path: string, handler: THandler): IEmitter;
+        post(path: string, handler: THandler): IEmitter;
+        put(path: string, handler: THandler): IEmitter;
+        delete(path: string, handler: THandler): IEmitter;
+        head(path: string, handler: THandler): IEmitter;
+        options(path: string, handler: THandler): IEmitter;
+        patch(path: string, handler: THandler): IEmitter;
+        route(method: THTTPMethod, route: string, handler: THandler): IEmitter;
     
-        on<T>(eventName: string | symbol, listener: TEventTargetListener<T>, options?: IListenerOptions): this
-        on(eventName: "kernel.request", listener: TEventTargetListener<IServerRequestEvent>, options?: IListenerOptions | undefined): this;
-        on(eventName: "kernel.parse", listener: TEventTargetListener<IServerParseEvent>, options?: IListenerOptions | undefined): this;
-        on(eventName: "kernel.controller", listener: TEventTargetListener<IServerControllerEvent>, options?: IListenerOptions | undefined): this;
-        on(eventName: "kernel.response", listener: TEventTargetListener<IServerResponseEvent>, options?: IListenerOptions | undefined): this;
-        on(eventName: "kernel.serialize", listener: TEventTargetListener<IServerSerializeEvent>, options?: IListenerOptions | undefined): this;
-        on(eventName: "kernel.trailers", listener: TEventTargetListener<IServerTrailersEvent>, options?: IListenerOptions | undefined): this;
-        on(eventName: "kernel.error", listener: TEventTargetListener<IServerErrorEvent>, options?: IListenerOptions | undefined): this;
-        on(eventName: "kernel.warning", listener: TEventTargetListener<IServerWarningEvent>, options?: IListenerOptions | undefined): this;
-        on(eventName: "kernel.critical", listener: TEventTargetListener<IServerCriticalEvent>, options?: IListenerOptions | undefined): this;
-        on(eventName: "kernel.finish", listener: TEventTargetListener<IServerFinishEvent>, options?: IListenerOptions | undefined): this;
-        off(eventName: string | symbol, listener: TEventTargetListener): this
+        on<T>(eventName: string | symbol, listener: TEmitterListener<T>, options?: IListenerOptions): this
+        on(eventName: "kernel.request", listener: TEmitterListener<IServerRequestEvent>, options?: IListenerOptions | undefined): this;
+        on(eventName: "kernel.parse", listener: TEmitterListener<IServerParseEvent>, options?: IListenerOptions | undefined): this;
+        on(eventName: "kernel.controller", listener: TEmitterListener<IServerControllerEvent>, options?: IListenerOptions | undefined): this;
+        on(eventName: "kernel.response", listener: TEmitterListener<IServerResponseEvent>, options?: IListenerOptions | undefined): this;
+        on(eventName: "kernel.serialize", listener: TEmitterListener<IServerSerializeEvent>, options?: IListenerOptions | undefined): this;
+        on(eventName: "kernel.trailers", listener: TEmitterListener<IServerTrailersEvent>, options?: IListenerOptions | undefined): this;
+        on(eventName: "kernel.error", listener: TEmitterListener<IServerErrorEvent>, options?: IListenerOptions | undefined): this;
+        on(eventName: "kernel.warning", listener: TEmitterListener<IServerWarningEvent>, options?: IListenerOptions | undefined): this;
+        on(eventName: "kernel.critical", listener: TEmitterListener<IServerCriticalEvent>, options?: IListenerOptions | undefined): this;
+        on(eventName: "kernel.finish", listener: TEmitterListener<IServerFinishEvent>, options?: IListenerOptions | undefined): this;
+        off(eventName: string | symbol, listener: TEmitterListener): this
         eventNames(): (string | symbol)[];
         listeners(eventName: string | symbol): TListenerEntry[];
         rawListeners(eventName: string | symbol): IEventEmitterListenerBucket[];
         listenerCount(eventName: string | symbol): number;
         removeAllListeners(eventName?: string | symbol | undefined): this;
-        emit(event: IEventTargetEvent): Promise<boolean>;
+        emit(event: IEmitterEvent): Promise<boolean>;
         
         callback(): (request: IncomingMessage, response: ServerResponse<IncomingMessage>) => Promise<void>;
         listen(port?: number | undefined, hostname?: string | undefined, backlog?: number | undefined, listeningListener?: (() => void) | undefined): NodeServer<typeof IncomingMessage, typeof ServerResponse>;

@@ -1,8 +1,8 @@
-import { IEventTargetEvent, IEventTarget } from "./target"
+import { IEmitterEvent, IEmitter } from "./target"
 import { IHttpRequest } from "./request"
 import { IHttpResponse } from "./response"
 
-interface IServerEvent extends IEventTargetEvent {
+interface IServerEvent extends IEmitterEvent {
     /**
      * The `name` property returns current event name.
      */
@@ -18,7 +18,7 @@ interface IServerEvent extends IEventTargetEvent {
     /**
      * The `target` property is a reference to the emitter onto which the event was dispatched.
      */
-    readonly target: IEventTarget
+    readonly target: IEmitter
 }
 
 interface IKernelServerEvent extends IServerEvent {

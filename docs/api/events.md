@@ -59,7 +59,7 @@ console.log(event.serial);
 			<td>
 				<pre> 
 /**
-* print: EventTarget {
+* print: Emitter {
 *  ...
 * }
 */
@@ -177,7 +177,7 @@ console.log(event.serial);
 			<td>
 				<pre> 
 /**
-* print: EventTarget {
+* print: Emitter {
 *  ...
 * }
 */
@@ -296,7 +296,7 @@ console.log(event.serial);
 			<td>
 				<pre> 
 /**
-* print: EventTarget {
+* print: Emitter {
 *  ...
 * }
 */
@@ -414,7 +414,7 @@ console.log(event.serial);
 			<td>
 				<pre> 
 /**
-* print: EventTarget {
+* print: Emitter {
 *  ...
 * }
 */
@@ -532,7 +532,7 @@ console.log(event.serial);
 			<td>
 				<pre> 
 /**
-* print: EventTarget {
+* print: Emitter {
 *  ...
 * }
 */
@@ -668,7 +668,7 @@ console.log(event.serial);
 			<td>
 				<pre> 
 /**
-* print: EventTarget {
+* print: Emitter {
 *  ...
 * }
 */
@@ -784,7 +784,7 @@ console.log(event.serial);
 			<td>
 				<pre> 
 /**
-* print: EventTarget {
+* print: Emitter {
 *  ...
 * }
 */
@@ -902,7 +902,7 @@ console.log(event.serial);
 			<td>
 				<pre> 
 /**
-* print: EventTarget {
+* print: Emitter {
 *  ...
 * }
 */
@@ -1038,7 +1038,7 @@ console.log(event.serial);
 			<td>
 				<pre> 
 /**
-* print: EventTarget {
+* print: Emitter {
 *  ...
 * }
 */
@@ -1156,7 +1156,7 @@ console.log(event.serial);
 			<td>
 				<pre> 
 /**
-* print: EventTarget {
+* print: Emitter {
 *  ...
 * }
 */

@@ -119,7 +119,7 @@ However, during request processing, the listener will in most cases be called on
 
 ```js 
 server.on('kernel.request', function (event) {
-	// EventTarget {
+	// Emitter {
 	//  _events: Map(1) {
 	//    'foo' => Collection {
 	//      [Symbol(kCollectionListeners)]: [Array],

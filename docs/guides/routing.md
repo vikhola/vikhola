@@ -62,7 +62,7 @@ But except arguments controller function also receive current event target as `t
 
 ```js
 server.route('GET', '/', function(request, response) {
-	// EventTarget {
+	// Emitter {
 	//  _events: Map(1) {
 	//    'foo' => Collection {
 	//      [Symbol(kCollectionListeners)]: [Array],

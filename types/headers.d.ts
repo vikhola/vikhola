@@ -22,7 +22,7 @@ export interface IHttpHeaders {
      * 
      * If primary header name is not present in the collection, method will try to return the value by alternative header name if one is specified.
      */
-    get(name: string, alt?: string): THeaderValue
+    get<T>(name: string): T | undefined
     /**
      * The `delete()` method removes the specified header by its name from this colllection. 
      * 

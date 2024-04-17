@@ -1,11 +1,9 @@
 const assert = require('node:assert');
 const { describe, it } = require('node:test');
 const { Readable, Duplex } = require('stream');
-const { HttpRequest } = require('../lib/request.js');
-const { HttpHeaders } = require('../lib/headers.js');
 const { Cookie } = require('@vikhola/cookies');
+const { HttpRequest } = require('../lib/request.js');
 const { kRequestBody } = require('../lib/const.js');
-const { HttpBody } = require('../lib/body.js');
 
 const data = JSON.stringify({
     first_name: 'Jhon',
@@ -13,7 +11,7 @@ const data = JSON.stringify({
     items: ['bottle', 'chair']
 })
 
-class FeaturesMock {}
+class FeaturesMock extends Map {}
 
 class SocketMock extends Duplex {
 
@@ -51,11 +49,11 @@ class RequestMock extends Readable {
 
 describe('HttpRequest test', function() {
 
-    it('"headers" option', function() {
-        const headers = { 'content-length': Buffer.byteLength(data), 'content-type': 'application/json' }
-        const request = new RequestMock({ headers })
+    it('"ip" option', function() {
+        const socket = new SocketMock({ remoteAddress: '127.0.0.1' })
+        const request = new RequestMock({ socket }) 
         const aRequest = new HttpRequest(new FeaturesMock(),request)
-        assert.strictEqual(aRequest.headers instanceof HttpHeaders, true)
+        assert.strictEqual(aRequest.ip, '127.0.0.1')
     })
 
     it('"method" option', function() {
@@ -65,18 +63,6 @@ describe('HttpRequest test', function() {
         assert.equal(aRequest.method, method)
     })
 
-    it('"body" option', function() {
-        const expected = 'foo'
-        const socket = new SocketMock()
-        const request = new RequestMock({ socket }) 
-        const aBody = new HttpBody()
-        const aRequest = new HttpRequest(new FeaturesMock(), request, {}, aBody)
-
-        aBody.content = expected
-
-        assert.strictEqual(aRequest.body, expected)
-    })
-
     it('"socket" option', function() {
         const socket = new SocketMock()
         const request = new RequestMock({ socket }) 
@@ -84,24 +70,64 @@ describe('HttpRequest test', function() {
         assert.strictEqual(aRequest.socket, socket)
     })
 
-    it('"ip" option', function() {
-        const context = {}
-        const socket = new SocketMock({ remoteAddress: '127.0.0.1' })
-        const request = new RequestMock({ socket }) 
-        const aRequest = new HttpRequest(new FeaturesMock(),request)
-        assert.strictEqual(aRequest.ip, '127.0.0.1')
+    describe('"body", option', function() {
+
+        it('should return the response body from the featrues', function() {
+            const expected = 'foo'
+            const socket = new SocketMock()
+            const request = new RequestMock({ socket }) 
+            const aFeatures = new FeaturesMock()
+            const aRequest = new HttpRequest(aFeatures, request, {})
+            
+            aFeatures.set(kRequestBody, expected)
+    
+            assert.strictEqual(aRequest.body, expected)
+        })
+
     })
 
-    it('"contentType" option', function() {
-        const request = new RequestMock({ headers: { 'content-type': 'application/json' }  })
-        const aRequest = new HttpRequest(new FeaturesMock(),request)
-        assert.strictEqual(aRequest.contentType, 'application/json')
+    describe('"contentType", option', function() {
+
+        it('should return the request "Content-Type" header', function() {
+            const request = new RequestMock({ headers: { 'content-type': 'application/json' }  })
+            const aRequest = new HttpRequest(new FeaturesMock(),request)
+            assert.strictEqual(aRequest.contentType, 'application/json')
+        })
+
+        it('should return undefined if the request "Content-Type" header is not present', function() {
+            const request = new RequestMock({ headers: {}  })
+            const aRequest = new HttpRequest(new FeaturesMock(),request)
+            assert.strictEqual(aRequest.contentType, undefined)
+        })
+
+        it('should return undefined if the request "Content-Type" header is empty string', function() {
+            const request = new RequestMock({ headers: { 'content-type': '' }  })
+            const aRequest = new HttpRequest(new FeaturesMock(),request)
+            assert.strictEqual(aRequest.contentType, undefined)
+        })
+    
     })
 
-    it('"constentLength" option', function() {
-        const request = new RequestMock({ headers: { 'content-length': 100 }  })
-        const aRequest = new HttpRequest(new FeaturesMock(),request)
-        assert.strictEqual(aRequest.contentLength, 100)
+    describe('"constentLength", option', function() {
+
+        it('should return parsed the request "Content-Legth" header', function() {
+            const request = new RequestMock({ headers: { 'content-length': '200' }  })
+            const aRequest = new HttpRequest(new FeaturesMock(),request)
+            assert.strictEqual(aRequest.contentLength, 200)
+        })
+
+        it('should return undefined if the request "Content-Legth" header is not present', function() {
+            const request = new RequestMock({ headers: {}  })
+            const aRequest = new HttpRequest(new FeaturesMock(),request)
+            assert.strictEqual(aRequest.contentLength, undefined)
+        })
+
+        it('should return undefined if the request "Content-Legth" header is empty string', function() {
+            const request = new RequestMock({ headers: { 'content-length': '' }  })
+            const aRequest = new HttpRequest(new FeaturesMock(),request)
+            assert.strictEqual(aRequest.contentLength, undefined)
+        })
+    
     })
 
     describe('"cookies" option', function() {
