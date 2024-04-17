@@ -14,7 +14,6 @@
     "bytes": "^3.1.2",
     "fast-json-stringify": "^5.10.0",
     "fast-uri": "^2.3.0",
-    "fastify": "^4.26.2",
     "find-my-way": "^8.1.0"
   },
   "scripts": {
