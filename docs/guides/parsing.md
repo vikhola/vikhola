@@ -5,9 +5,9 @@
 When the server receives a request, it sets the request body to undefined until no handler can parse it.
 
 ```js
-server.get('/', function(request, response) {
+server.get('/', function(ctx) {
 	// print: undefined
-	console.log(request.body);
+	console.log(ctx.request.body);
 })
 ```
 
@@ -17,14 +17,14 @@ Exactly for parsing purposes application provides a special event called [`kerne
 // GET / HTTP/1.1 
 // foo
 
-server.get('/', function(request, response) {
+server.post('/', function(ctx) {
 	// print: 'foo'
-	console.log(request.body);
+	console.log(ctx.request.body);
 })
 .on('kernel.parse', async function(event) {
 	let data = ''
 
-	for await(chunk of event.body) {
+	for await(let chunk of event.body) {
 		data += chunk
 	};
 
