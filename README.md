@@ -89,7 +89,7 @@ server.on('kernel.request', function(event) {
     console.log('executes at every request.');
 });
 
-const route = server.get('/foo', function (request, response) {
+const route = server.get('/foo', function (ctx) {
     console.log('controller.');
 });
 
