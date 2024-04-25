@@ -1,8 +1,6 @@
-
-[headers]: https://github.com/vikhola/vikhola/blob/main/docs/api/headers.md
-[trailers]: https://github.com/vikhola/vikhola/blob/main/docs/api/trailers.md
 [serialization]: https://github.com/vikhola/vikhola/blob/main/docs/guides/serialize.md
 [lifecycle]: https://github.com/vikhola/vikhola/blob/main/docs/guides/lifecycle.md
+[mdn]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Trailer#directives
 
 # HttpResponse
 
@@ -13,19 +11,18 @@ HttpResponse is used to set information on the HTTP response sent back to the cl
 <table>
     <tbody>
         <tr>
-            <th>Property </th>
-            <th>Description</th>
-            <th>Example</th>
-        </tr>
-        <tr>
             <td>
-                response.raw
+                <b>raw</b>
             </td>
+        </tr> 
+        <tr> 
             <td>
                 The "raw" property return the HTTP response from Node.js core.
             </td>
+        </tr>
+        <tr>  
             <td>
-                <pre>
+                <pre lang='js'>
 /**
 * print: ServerResponse {
 *  ...
@@ -34,54 +31,84 @@ console.log(response.raw);
                 </pre>
             </td>
         </tr>  
+	</tbody>
+	<tbody>
         <tr>
             <td>
-                request.cookies
+                <b>cookies</b>
             </td>
+        </tr>
+        <tr>
             <td>
                 The "cookies" property is a cookie collection that will be sent to the end user.
             </td>
+        </tr>
+        <tr>
             <td>
-                <pre>
+                <pre lang='js'>
 response.cookies.push(new Cookie('foo', 'bar'));
                 </pre>
             </td>
         </tr> 
+	</tbody>
+	<tbody>
         <tr>
             <td>
-                response.headers
+                <b>headers</b>
             </td>
+        </tr>
+        <tr>
             <td>
                 The "headers" property returns a headers collection containing the headers that will be sent to the end user.
             </td>
+        </tr>
+        <tr>
             <td>
-                <pre>
-response.headers.set('foo', 'bar');
+                <pre lang='js'>
+/**
+* {}
+*/
+console.log(response.headers);
                 </pre>
             </td>
         </tr> 
+	</tbody>
+	<tbody>
         <tr>
             <td>
-                response.trailers
+                <b>trailers</b>
             </td>
+        </tr>
+        <tr>  
             <td>
-                The "trailers" property returns a trailers collection containing the trailers that will be sent to the end user.
+                The "trailers" property returns a trailer names collection containing the trailers that will be sent to the end user.
             </td>
+        </tr>
+        <tr>  
             <td>
-                <pre>
-response.trailers.add('foo');
+                <pre lang='js'>
+/**
+* []
+*/
+console.log(response.trailers);
                 </pre>
             </td>
         </tr> 
+	</tbody>
+	<tbody>
         <tr>
             <td>
-                response.sent
+                <b>sent</b>
             </td>
+        </tr>
+        <tr>
             <td>
                 The "sent" property indicates if the underlying response instance has completed writing.
             </td>
+        </tr>
+        <tr>
             <td>
-                <pre>
+                <pre lang='js'>
 /**
 * print: false
 */
@@ -94,15 +121,21 @@ console.log(response.sent);
                 </pre>
             </td>
         </tr> 
+	</tbody>
+	<tbody>
         <tr>
             <td>
-                response.statusCode
+                <b>statusCode</b>
             </td>
+        </tr> 
+        <tr> 
             <td>
                 The "statusCode" field is gets and sets the HTTP status for the response. By default it is 200.
             </td>
+        </tr>
+        <tr>  
             <td>
-                <pre>
+                <pre lang='js'>
 /**
 * print: 200
 */
@@ -115,20 +148,26 @@ console.log(response.statusCode);
                 </pre>
             </td>
         </tr> 
+	</tbody>
+	<tbody>
         <tr>
-            <td rowspan=2>
-                response.contentType
+            <td>
+                <b>contentType</b>
             </td>
+        </tr> 
+        <tr> 
             <td>
                 The "contentType" property is gets and sets the response "Content-Type" header.
             </td>
+        </tr> 
+        <tr> 
             <td>
-                <pre>
+                <pre lang='js'>
 response.contentType = 'text/plain';
 /**
 * print: text/plain
 */
-console.log(response.headers.get('Content-Type'));
+console.log(response.getHeader('Content-Type'));
                 </pre>
             </td>
         </tr>
@@ -136,30 +175,38 @@ console.log(response.headers.get('Content-Type'));
             <td>
                 If "null" is provided, removes the "Content-Type" header.
             </td>
+        </tr> 
+        <tr> 
             <td>
-                <pre>
-                response.contentType = null;
+                <pre lang='js'>
+response.contentType = null;
 /**
 * print: undefined
 */
-console.log(response.headers.get('Content-Type'));
+console.log(response.getHeader('Content-Type'));
                 </pre>
             </td>
         </tr>
+	</tbody>
+	<tbody>
         <tr>
-            <td rowspan=2>
-                response.contentLength
+            <td>
+                <b>contentLength</b>
             </td>
+        </tr>
+        <tr>
             <td>
                 The "contentLength" property is gets and sets the response "Content-Length" header.
             </td>
+        </tr>
+        <tr>
             <td>
-                <pre>
-                response.contentLength = 3;
+                <pre lang='js'>
+response.contentLength = 3;
 /**
 * print: 3
 */
-console.log(response.headers.get('Content-Length'));
+console.log(response.getHeader('Content-Length'));
                 </pre>
             </td>
         </tr>
@@ -167,25 +214,33 @@ console.log(response.headers.get('Content-Length'));
             <td>
                 If "null" is provided, removes the "Content-Length" header.
             </td>
+        </tr> 
+        <tr> 
             <td>
-                <pre>
-                response.contentLength = null;
+                <pre lang='js'>
+response.contentLength = null;
 /**
 * print: undefined
 */ 
-console.log(response.headers.get('Content-Length'));
+console.log(response.getHeader('Content-Length'));
                 </pre> 
             </td>
         </tr>
+	</tbody>
+	<tbody>
         <tr>
-            <td rowspan=6>
-                response.body
+            <td>
+                <b>body</b>
             </td>
+        </tr>
+        <tr>
             <td>
                 The response "body" gets the payload that will be sent to the end user.
             </td>
+        </tr>
+        <tr>
             <td>
-                <pre>
+                <pre lang='js'>
 response.send('foo');
 /**
 * print: foo
@@ -194,28 +249,152 @@ console.log(response.body);
                 </pre>
             </td>
         </tr>
-       
     </tbody>
 </table>
+
 
 ## Methods
 
 <table>
+	<tbody>
+		<tr>
+			<td>
+				<b>setHeader([name, value][dict])</b>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				The "setHeader()" method sets one or more header name-value pairs within a header collection. 
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<pre lang='js'>
+response.setHeader('foo', 'bar');
+/**
+* print: { foo: 'bar' }
+*/
+console.log(response.headers);
+				</pre>
+			</td>
+		</tr>  
+		<tr>
+			<td>
+				Bulk assignment is done through a dictionary with header name-value pairs.
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<pre lang='js'>
+response.setHeader({ 'foo': 'bar', 'baz': 'bar' });
+/**
+* print: { 'foo': 'bar', 'baz': 'bar' }
+*/
+console.log(response.headers);
+				</pre>
+			</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>
+				<b>getHeader(name [, alt])</b>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				The "getHeader()" method returns a header value by its name. 
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<pre lang='js'>
+response.setHeader('foo', 'bar');
+/**
+* print: 'bar'
+*/
+console.log(response.getHeader('foo'));
+				</pre>
+			</td>
+		</tr>  
+		<tr>
+			<td>
+				If primary header name is not present in the collection, method will try to return the value by alternative header name if one is specified.
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<pre lang='js'>
+response.setHeader('foo', 'bar');
+/**
+* print: 'bar'
+*/
+console.log(response.getHeader('baz', 'foo'));
+				</pre>
+			</td>
+		</tr>  	
+	</tbody>
+	<tbody>
+		<tr>
+			<td>
+				<b>hasHeader(name)</b>
+			</td>
+		</tr>  	
+		<tr>  	
+			<td>
+				The "hasHeader()" method checks whether a header exists in the header collection and returns a boolean value "true" if it exists and "false" otherwise.
+			</td>
+		</tr>  	
+		<tr>  	
+			<td>
+				<pre lang='js'>
+response.setHeader('foo', 'bar');
+/**
+* print: true
+*/
+console.log(response.hasHeader('foo'));
+				</pre>
+			</td>
+		</tr>  
+	</tbody>
+	<tbody>
+		<tr>
+			<td>
+				<b>removeHeader(name)</b>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				The "removeHeader()" method removes the specified header by its name from the header collection.
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<pre lang='js'>
+response.setHeader('foo', 'bar');
+response.removeHeader('foo');
+/**
+* print: false
+*/
+console.log(response.hasHeader('foo'));
+				</pre>
+			</td>
+		</tr>  
+	</tbody>
     <tbody>
         <tr>
-            <th>Method</th>
-            <th>Description</th>
-            <th>Example</th>
+            <td>
+                <b>send([body])</b>
+            </td>
         </tr>
         <tr>
-            <td rowspan=7>
-                response.send([body])
-            </td>
             <td>
                 The "send()" method interrupts the lifecycle request and push it depending on its position to the response or to the writing stages with an optional body.
             </td>
+        </tr>
+        <tr>
             <td>
-                <pre>
+                <pre lang='js'>
 response.send('foo');
 /**
 * print: foo
@@ -225,64 +404,94 @@ console.log(response.body);
             </td>
         </tr>
 		<tr>
-			<td colspan=2>
-              This method except body property also may affect the response "contentType" field, when the response "Content-Type" header is not set, its value will be set to the default body type.
+			<td>
+              This method except body also may affect the response "contentType" property, when the response "Content-Type" header is not set, its value will be set to the default body type.
             </td>
 		</tr>
 		<tr>
+			<td>
+				<table>
+ 					<tr>
+            			<td>
+                			<b>text</b>
+           				</td>
+            			<td>
+							text/plain; charset=utf-8
+            			</td>
+        			</tr>
+					<tr>
+            			<td>
+                			<b>HTML</b>
+           				</td>
+            			<td>
+							text/html; charset=utf-8
+            			</td>
+        			</tr>
+        			<tr>
+            			<td>
+                			<b>buffer</b>
+            			</td>
+            			<td>
+							application/octet-stream
+            			</td>
+       				</tr>
+        			<tr>
+            			<td>
+                			<b>stream</b>
+            			</td>
+            			<td>
+							application/octet-stream
+						</td>
+        			</tr>
+        			<tr>
+            			<td>
+                			<b>JSON</b>
+            			</td>
+            			<td>
+               				application/json; charset=utf-8.
+            			</td>
+        			</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
             <td>
-            "null"
-            </td>
-            <td>
-                In the case of "null" from the response will be removed "Content-Type", "Content-Length" and "Transfer-Encoding" headers.
+When "null" value is provided from the response will be removed except body also "Content-Type", "Content-Length" and "Transfer-Encoding" headers.
             </td>
         </tr>  
- 		<tr>
+		<tr>
             <td>
-                "String"
+                <pre lang='js'>
+response.contentType = 'text/plain'
+response.send(null)
+/**
+* print: undefined
+*/ 
+console.log(response.contentType);
+                </pre>
             </td>
+        </tr>
+	</tbody>
+    <tbody>
+        <tr>
             <td>
-                The "contentType" will defaulted to "text/plain; charset=utf-8". Except situation when body is "HTML" string, then it will be set to "text/html; charset=utf-8". 
+                <b>redirect(path)</b>
             </td>
         </tr>
         <tr>
-            <td>
-                "Buffer"
-            </td>
-            <td>
-                The "contentType" will defaulted to "application/octet-stream".
-            </td>
-        </tr>
-        <tr>
-            <td>
-                "Stream"
-            </td>
-            <td>
-                The "contentType" will defaulted just as with buffer to "application/octet-stream".
-        </tr>
-        <tr>
-            <td>
-                "JSON"
-            </td>
-            <td>
-                The "contentType" will defaulted to "application/json; charset=utf-8". This type of body also trigger serialization event.
-            </td>
-        </tr>
-        <tr>
-            <td rowspan=2>
-                response.redirect(path)
-            </td>
             <td>
                 Sets the response "Location" header to the specified URL and optionally sets default status code to "302".
             </td>
+        </tr>
+        <tr>
             <td>
-                <pre>
+                <pre lang='js'>
 response.redirect('/home');
 /**
 * print: /home 302
 */ 
 console.log(
-    response.headers.get('Location'), 
+    response.getHeader('Location'), 
     response.statusCode
 );
                 </pre>
@@ -292,47 +501,106 @@ console.log(
             <td>
                 The "statusCode" response will only be set if it was not previously set.
             </td>
+        </tr>
+        <tr>
             <td>
-                <pre>
+                <pre lang='js'>
 response.statusCode = 304;
 response.redirect('/home');
 /**
 * print: /home 304
 */ 
 console.log(
-    response.headers.get('Location'), 
+    response.getHeader('Location'), 
     response.statusCode
 );
                 </pre>
             </td>
         </tr>
-        <tr>
-            <td>
-                response.clear()
-            </td>
-            <td>
-                As the name suggests, method clear response instance "body", "headers", "cookies" and "trailers".
-            </td>
-            <td>
-                <pre>
-response.headers.set('foo', 'bar');
-response.trailers.set('foo', 'bar');
-response.body = 'foo';
-response.clear();
-/**
-* print: undefined
-*/ 
-console.log(response.body);
-/**
-* print: 0
-*/ 
-console.log(response.headers.size);
-/**
-* print: 0
-*/ 
-console.log(response.trailers.size);
-                </pre>
-            </td>
-        </tr>
     </tbody>
+	<tbody>
+		<tr>
+			<td>
+				<b>addTrailer(name)</b>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				The "addTrailer()" method declares the name of the trailer inside the trailer collection and it will be added to the "Trailer" response header. This must happen before the response headers are sent.
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<pre lang='js'>
+response.addTrailer('foo');
+/**
+* print: [ 'foo' ]
+*/
+console.log(response.trailers);
+				</pre>
+			</td>
+		</tr>  
+		<tr>
+			<td>
+				If trailer name is dissalowed from use such as "Content-Length" header an error will be triggered.
+			</td>
+		</tr>  
+		<tr>  
+			<td>
+				<pre lang='js'>
+/**
+* will throw an error.
+*/
+response.addTrailer('Content-Length');
+				</pre>
+			</td>
+		</tr>  
+    </tbody>
+	<tbody>
+		<tr>
+			<td>
+				<b>hasTrailer(name)</b>
+			</td>
+		</tr>  
+		<tr>  
+			<td>
+				The "hasTrailer()" method checks whether a trailer exists in the trailer collection and returns a boolean value "true" if it exists and "false" otherwise.
+			</td>
+		</tr>  
+		<tr>  
+			<td>
+				<pre lang='js'>
+response.addTrailer('foo');
+/**
+* print: true
+*/
+console.log(response.hasTrailer('foo'));
+				</pre>
+			</td>
+		</tr>
+    </tbody>
+	<tbody>
+		<tr>
+			<td>
+				<b>removeTrailer(name)</b>
+			</td>
+		</tr>  
+		<tr>  
+			<td>
+				The "removeTrailer()" method removes the specified trailer from the trailer collection.
+			</td>
+		</tr>  
+		<tr>  
+			<td>
+				<pre lang='js'>
+response.addTrailer('foo');
+response.removeTrailer('foo');
+/**
+* print: false
+*/
+console.log(response.hasTrailer('foo'));
+				</pre>
+			</td>
+		</tr>
+	</tbody>
 </table>

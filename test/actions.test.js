@@ -44,6 +44,7 @@ const {
     kResponseBody
 }  = require('../lib/const');
 const { HttpFeatures } = require("../lib/features.js");
+const { HttpContent } = require("../lib/content.js");
 
 class ErrorMock extends Error {
 
@@ -119,7 +120,7 @@ describe('"RequestAction" test', function() {
     
             const aParseListener = t.mock.fn((event) => {
                 assert.strictEqual(event instanceof ParseEvent, true)
-                assert.strictEqual(event.body, undefined)
+                assert.strictEqual(event.body, aContext.request.raw)
                 assert.strictEqual(event.target, aContext.target)
                 assert.strictEqual(event.request, aContext.request)
 
@@ -154,6 +155,25 @@ describe('"RequestAction" test', function() {
             
             assert.strictEqual(aParseListener.mock.callCount(), 1)
             assert.strictEqual(aContext.request.body, expected)
+        })
+
+        it('should not affect the request body if the "ParseEvent" does not have any listeners', async function(t) {
+            const aContext = new ContextMock()
+    
+            await subscribe(RequestAction, aContext)
+            
+            assert.strictEqual(aContext.request.body, undefined)
+        })
+
+        it('should not affect the request body if the "ParseEvent" listeners does not change the event body', async function(t) {
+            const aContext = new ContextMock()
+            const aParseListener = t.mock.fn((event) => {})
+    
+            aContext.target.on(kParseEvent, aParseListener)
+    
+            await subscribe(RequestAction, aContext)
+            
+            assert.strictEqual(aContext.request.body, undefined)
         })
 
     })
@@ -195,6 +215,7 @@ describe('"RequestAction" test', function() {
             const aControllerListener = t.mock.fn(_ => {
                 assert.strictEqual(aRequestListener.mock.callCount(), 1)
                 assert.strictEqual(aParseListener.mock.callCount(), 1)
+                assert.strictEqual(aContext.request.body, expected)
             })
     
             aContext.target.on(kRequestEvent, aRequestListener)
@@ -203,8 +224,9 @@ describe('"RequestAction" test', function() {
 
             await subscribe(RequestAction, aContext)
             
+            assert.strictEqual(aRequestListener.mock.callCount(), 1)
             assert.strictEqual(aParseListener.mock.callCount(), 1)
-            assert.strictEqual(aContext.request.body, expected)
+            assert.strictEqual(aControllerListener.mock.callCount(), 1)
         })
 
         it('should stop "ControllerEvent" event propagation if the response send method is called', async function(t) {
@@ -484,46 +506,74 @@ describe('"ErrorAction" test', function() {
             assert.strictEqual(aErrorListenerTwo.mock.callCount(), 0)
         })
 
-    })
+        it('should process error and prepare the response default payload before event', async function(t) {
+            const aError = new Error()
+            const aContext = new ContextMock()
+            aContext.response.setHeader('Content-Type', 'text/plain')
+            aContext.response.setHeader('Content-Length', 3)
 
-    it('should process error and set the response default payload', async function(t) {
-        const aError = new Error()
-        const aContext = new ContextMock()
+            const aErrorListener = t.mock.fn((event) => {
+                assert.strictEqual(aContext.response.hasHeader('Content-Type'), false)
+                assert.strictEqual(aContext.response.hasHeader('Content-Length'), false)
+                assert.strictEqual(aContext.response.body, STATUS_CODES[500])
+                assert.strictEqual(aContext.response.statusCode, 500)
+            })
+    
+            aContext.target.on(kErrorEvent, aErrorListener)
+    
+            await subscribe(ErrorAction, aContext, aError)
 
-        await subscribe(ErrorAction, aContext, aError)
+            assert.strictEqual(aErrorListener.mock.callCount(), 1)
+        })
 
-        assert.strictEqual(aContext.response.body, STATUS_CODES[500])
-        assert.strictEqual(aContext.response.statusCode, 500)
-    })
+        it('should process error and set default response body that matches error code', async function(t) {
+            const aError = new ErrorMock('Oops', 404)
+            const aContext = new ContextMock()
 
-    it('should process error and set default response body that matches error code', async function(t) {
-        const aError = new ErrorMock('Oops', 404)
-        const aContext = new ContextMock()
+            const aErrorListener = t.mock.fn((event) => {
+                assert.strictEqual(aContext.response.body, STATUS_CODES[404])
+                assert.strictEqual(aContext.response.statusCode, 404)
+            })
+    
+            aContext.target.on(kErrorEvent, aErrorListener)
 
-        await subscribe(ErrorAction, aContext, aError)
+            await subscribe(ErrorAction, aContext, aError)
 
-        assert.strictEqual(aContext.response.body, STATUS_CODES[404])
-        assert.strictEqual(aContext.response.statusCode, 404)
-    })
+            assert.strictEqual(aErrorListener.mock.callCount(), 1)
+        })
 
-    it('should process error and set default code if error code is not number', async function(t) {
-        const aError = new ErrorMock('Oops', 'foo')
-        const aContext = new ContextMock()
+        it('should process error and set default code if error code is not number', async function(t) {
+            const aError = new ErrorMock('Oops', 'foo')
+            const aContext = new ContextMock()
 
-        await subscribe(ErrorAction, aContext, aError)
+            const aErrorListener = t.mock.fn((event) => {
+                assert.strictEqual(aContext.response.body, STATUS_CODES[500])
+                assert.strictEqual(aContext.response.statusCode, 500)
+            })
 
-        assert.strictEqual(aContext.response.body, STATUS_CODES[500])
-        assert.strictEqual(aContext.response.statusCode, 500)
-    })
+            aContext.target.on(kErrorEvent, aErrorListener)
 
-    it('should process error and set response response body to the error content if present', async function(t) {
-        const aError = new ErrorMock('Oops', 404, 'foo')
-        const aContext = new ContextMock()
+            await subscribe(ErrorAction, aContext, aError)
 
-        await subscribe(ErrorAction, aContext, aError)
+            assert.strictEqual(aErrorListener.mock.callCount(), 1)
+        })
 
-        assert.strictEqual(aContext.response.body, 'foo')
-        assert.strictEqual(aContext.response.statusCode, 404)
+        it('should process error and set response response body to the error content if present', async function(t) {
+            const aError = new ErrorMock('Oops', 404, 'foo')
+            const aContext = new ContextMock()
+
+            const aErrorListener = t.mock.fn((event) => {
+                assert.strictEqual(aContext.response.body, 'foo')
+                assert.strictEqual(aContext.response.statusCode, 404)
+            })
+
+            aContext.target.on(kErrorEvent, aErrorListener)
+
+            await subscribe(ErrorAction, aContext, aError)
+
+            assert.strictEqual(aErrorListener.mock.callCount(), 1)
+        })
+    
     })
 
     it('should immediately call callback if the error is null', async function(t) {
@@ -618,7 +668,7 @@ describe('"WritingAction"', function() {
     
             aContext.target.on(kSerializeEvent, aSerializeListener)
             aContext.response.setHeader('Content-Type', 'text/plain')
-            aContext.features.set(kResponseBody, expected)
+            aContext.features.set(kResponseBody, new HttpContent(expected))
 
             await subscribe(WritingAction, aContext)
                 
@@ -634,7 +684,7 @@ describe('"WritingAction"', function() {
     
             aContext.target.on(kSerializeEvent, aSerializeListenerOne)
             aContext.target.on(kSerializeEvent, aSerializeListenerTwo)
-            aContext.features.set(kResponseBody, 123)
+            aContext.features.set(kResponseBody, new HttpContent(123))
 
             await subscribe(WritingAction, aContext)
             
@@ -956,7 +1006,7 @@ describe('"WritingAction"', function() {
         aContext.target.on(kSerializeEvent, aSerializeListenerTwo)
 
         aContext.response.setHeader('Content-Type', 'text/plain')
-        aContext.features.set(kResponseBody, { a: 1 })
+        aContext.features.set(kResponseBody, new HttpContent({ a: 1 }))
 
         await assert.rejects(_ => subscribe(WritingAction, aContext), aError)
 
@@ -969,7 +1019,7 @@ describe('"WritingAction"', function() {
         const aContext = new ContextMock()
         const aSerializeListener = t.mock.fn((event) => event.response.send({ a: 1 }))
 
-        aContext.features.set(kResponseBody, { a: 1 })
+        aContext.features.set(kResponseBody, new HttpContent({ a: 1 }))
         aContext.target.on(kSerializeEvent, aSerializeListener)
 
         await assert.rejects(
@@ -983,7 +1033,7 @@ describe('"WritingAction"', function() {
         const aContext = new ContextMock()
         const aSerializeListener = t.mock.fn((event) => event.body = undefined)
 
-        aContext.features.set(kResponseBody, { a: 1 })
+        aContext.features.set(kResponseBody, new HttpContent({ a: 1 }))
         aContext.target.on(kSerializeEvent, aSerializeListener)
 
         await assert.rejects(

@@ -1,7 +1,4 @@
-[scopes]: https://github.com/vikhola/vikhola/blob/main/docs/guides/scopes.md
 [events]: https://github.com/vikhola/vikhola/blob/main/docs/guides/events.md
-[request]: https://github.com/vikhola/vikhola/blob/main/docs/api/request.md
-[response]: https://github.com/vikhola/vikhola/blob/main/docs/api/response.md
 
 # Routing 
 
@@ -17,16 +14,98 @@ server.route('GET', '/', function() {});
 
 Server able to route all HTTP methods defined by http core module. However besides of support server also provides shorhand declaration for some methods: 
 
-Method | Declaration |
----|---|
-`GET` | ```server.get('/', function() {}) ```
-`HEAD` | ```server.head('/', function() {})```
-`POST` | ```server.post('/', function() {})```
-`PATCH` | ```server.patch('/', function() {})```
-`PUT` | ```server.put('/', function() {})```
-`DELETE` | ```server.delete('/', function() {})```
-`OPTIONS` | ```server.options('/', function() {})```
-
+<table>
+	<tbody>
+		<tr>
+			<th>Method</th>
+			<th>Declaration</th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>
+				<b>GET</b>
+			</td>
+			<td>
+				<pre lang='js'> 
+server.get('/', function() {})
+				</pre>
+			</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>
+				<b>HEAD</b>
+			</td>
+			<td>
+				<pre lang='js'> 
+server.head('/', function() {})
+				</pre>
+			</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>
+				<b>POST</b>
+			</td>
+			<td>
+				<pre lang='js'> 
+server.post('/', function() {})
+				</pre>
+			</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>
+				<b>PATCH</b>
+			</td>
+			<td>
+				<pre lang='js'> 
+server.patch('/', function() {})
+				</pre>
+			</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>
+				<b>PUT</b>
+			</td>
+			<td>
+				<pre lang='js'> 
+server.put('/', function() {})
+				</pre>
+			</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>
+				<b>DELETE</b>
+			</td>
+			<td>
+				<pre lang='js'> 
+server.delete('/', function() {})
+				</pre>
+			</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>
+				<b>OPTIONS</b>
+			</td>
+			<td>
+				<pre lang='js'> 
+server.options('/', function() {})
+				</pre>
+			</td>
+		</tr>
+	</tbody>
+</table>
 
 ## Route paths
 
@@ -50,23 +129,21 @@ server.route('GET', '/:id(\\d+)', function() {});
 
 ## Route controllers
 
-Last argument is a callback function called when the application receives a request to the specified route (endpoint) and HTTP method. This function receive application [`request`][request] and [`response`][response] objects as arguments.
+Last argument is a callback function called when the application receives a request to the specified route (endpoint) and HTTP method. This function receive lifecycle context with `request`, `response`, `target` and `features` objects as arguments.
 
 ```js
-server.route('GET', '/', function(request, response) {
-	response.send('Hello World!')
+server.route('GET', '/', function(ctx) {
+	ctx.response.send('Hello World!')
 });
 ```
 
 But except arguments controller function also receive current event target as `this`. 
 
 ```js
-server.route('GET', '/', function(request, response) {
+server.route('GET', '/', function(ctx) {
 	// Emitter {
 	//  _events: Map(1) {
 	//    'foo' => Collection {
-	//      [Symbol(kCollectionListeners)]: [Array],
-	//      [Symbol(kCollectionCallbacks)]: [Map]
 	//    }
 	//  },
 	//  ...
@@ -79,7 +156,7 @@ server.route('GET', '/', function(request, response) {
 Route methods return event target instance. The event listeners added to this object will be added to the route scope and executed only on this specific route. Read more about application scopes you can [here][scopes] and about events [here][events].
 
 ```js
-const route = server.route('GET', '/', function(request, response) {});
+const route = server.route('GET', '/', function(ctx) {});
 
 route.on('kernel.response', function(event) {
 	event.response.send('Hello World!');

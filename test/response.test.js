@@ -2,6 +2,7 @@ const assert = require("node:assert");
 const { describe, it } = require('node:test');
 const { Readable } = require("node:stream");
 const { ServerResponse } = require('http')
+const { HttpContent } = require("../lib/content.js");
 const { HttpResponse } = require("../lib/response.js");
 const { kResponseBody } = require("../lib/const.js");
 
@@ -9,6 +10,10 @@ class FeaturesMock extends Map {
 
     constructor(pipeline) {
         super()
+    }
+
+    remove(name) {
+        this.delete(name)
     }
 
 }
@@ -37,7 +42,7 @@ describe('HttpResponse test', function() {
             const aFeatures = new FeaturesMock()
             const aResponse = new HttpResponse(aFeatures, new ServerResponse({ method: 'GET' }))
             
-            aFeatures.set(kResponseBody, expected)
+            aFeatures.set(kResponseBody, { value: expected })
     
             assert.strictEqual(aResponse.body, expected)
         })
@@ -98,6 +103,54 @@ describe('HttpResponse test', function() {
 
             aResponse.send('foo')
             assert.strictEqual(aResponse.contentType, "text/plain; charset=utf-8")
+        })
+
+        it('should return "text/plain; charset=utf-8" as default "Content-Type" when the response body is "text" string', function() {
+            const expected = 'text/plain; charset=utf-8'  
+            const aResponse = new HttpResponse(new FeaturesMock(), new ServerResponse({ method: 'GET' }), new AbortController())
+
+            aResponse.send('foo')
+            assert.strictEqual(aResponse.contentType, expected)
+        })
+
+        it('should return "text/html; charset=utf-8" as default "Content-Type" when the response body is "html" string', function() {
+            const expected = 'text/html; charset=utf-8'
+            const aResponse = new HttpResponse(new FeaturesMock(), new ServerResponse({ method: 'GET' }), new AbortController())
+
+            aResponse.send('<a href="test"></a>')
+            assert.strictEqual(aResponse.contentType, expected)
+        })
+
+        it('should return "application/octet-stream" as default "Content-Type" when the response body is buffer', function() {
+            const expected = 'application/octet-stream'
+            const aResponse = new HttpResponse(new FeaturesMock(), new ServerResponse({ method: 'GET' }), new AbortController())
+
+            aResponse.send(Buffer.from('123'))
+            assert.strictEqual(aResponse.contentType, expected)
+        })
+
+        it('should return "application/octet-stream" as default "Content-Type" when the response body is "stream"', function() {
+            const expected = 'application/octet-stream'
+            const aResponse = new HttpResponse(new FeaturesMock(), new ServerResponse({ method: 'GET' }), new AbortController())
+
+            aResponse.send(Readable.from('test'))
+            assert.strictEqual(aResponse.contentType, expected)
+        })
+
+        it('should return "application/json" as default "Content-Type" when the response body is "json"', function() {
+            const expected = 'application/json; charset=utf-8'   
+            const aResponse = new HttpResponse(new FeaturesMock(), new ServerResponse({ method: 'GET' }), new AbortController())
+
+            aResponse.send({ a: 1 })
+            assert.strictEqual(aResponse.contentType, expected)
+        })
+
+        it('should return "text/html; charset=utf-8" as default "Content-Type" when the response body type is not match any other', function() {
+            const expected = 'text/html; charset=utf-8'
+            const aResponse = new HttpResponse(new FeaturesMock(), new ServerResponse({ method: 'GET' }), new AbortController())
+
+            aResponse.send('<a href="test"></a>')
+            assert.strictEqual(aResponse.contentType, expected)
         })
 
         it('should remove "Content-Type" header', function() {
@@ -240,47 +293,9 @@ describe('HttpResponse test', function() {
 
             aResponse.send(expected)
 
-            assert.strictEqual(aFeatures.get(kResponseBody), expected)
-        })
-
-        it('should set default "Content-Type" to "text/plain; charset=utf-8" when the response body is "text" string', function() {
-            const expected = 'text/plain; charset=utf-8'  
-            const aResponse = new HttpResponse(new FeaturesMock(), new ServerResponse({ method: 'GET' }), new AbortController())
-
-            aResponse.send('foo')
-            assert.strictEqual(aResponse.contentType, expected)
-        })
-
-        it('should set default "Content-Type" to "text/html; charset=utf-8" when the response body is "html" string', function() {
-            const expected = 'text/html; charset=utf-8'
-            const aResponse = new HttpResponse(new FeaturesMock(), new ServerResponse({ method: 'GET' }), new AbortController())
-
-            aResponse.send('<a href="test"></a>')
-            assert.strictEqual(aResponse.contentType, expected)
-        })
-
-        it('should set default "Content-Type" to "application/octet-stream" when the response body is buffer', function() {
-            const expected = 'application/octet-stream'
-            const aResponse = new HttpResponse(new FeaturesMock(), new ServerResponse({ method: 'GET' }), new AbortController())
-
-            aResponse.send(Buffer.from('123'))
-            assert.strictEqual(aResponse.contentType, expected)
-        })
-
-        it('should set default "Content-Type" to "application/octet-stream" when the response body is "stream"', function() {
-            const expected = 'application/octet-stream'
-            const aResponse = new HttpResponse(new FeaturesMock(), new ServerResponse({ method: 'GET' }), new AbortController())
-
-            aResponse.send(Readable.from('test'))
-            assert.strictEqual(aResponse.contentType, expected)
-        })
-
-        it('should set default "Content-Type" to "application/json" when the response body is "json"', function() {
-            const expected = 'application/json; charset=utf-8'   
-            const aResponse = new HttpResponse(new FeaturesMock(), new ServerResponse({ method: 'GET' }), new AbortController())
-
-            aResponse.send({ a: 1 })
-            assert.strictEqual(aResponse.contentType, expected)
+            const aContent = aFeatures.get(kResponseBody)
+            assert.strictEqual(aContent instanceof HttpContent, true)
+            assert.strictEqual(aContent.value, expected)
         })
 
         it('should remove body, type and all it headers when body is null', function() {
@@ -296,7 +311,7 @@ describe('HttpResponse test', function() {
             assert.strictEqual(aResponse.body, undefined)
             assert.strictEqual(aResponse.contentType, undefined)
             assert.strictEqual(aResponse.contentLength, undefined)
-            assert.strictEqual(aFeatures.get(kResponseBody), undefined)
+            assert.strictEqual(aFeatures.has(kResponseBody), false)
             assert.strictEqual(aResponse.hasHeader('Transfer-Ecnoding'), false)
         })
 

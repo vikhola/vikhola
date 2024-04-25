@@ -1,17 +1,10 @@
-
 [target]: https://github.com/vikhola/vikhola/blob/main/docs/api/target.md
 
 # Server
 
-The server used to configure the HTTP pipeline, and routes. This instance inherits the base [target][target] interface. Listeners added to the server will receive a global scope and can be triggered in any more specific scope as a route etc. But also it have its own parameters and properties.
+The server used to configure the HTTP pipeline, and routes. This instance inherits the base [target][target] interface. Listeners added to the server will receive a global scope and can be triggered in any route. But also it have its own parameters and properties.
 
 ## Parameters 
-
-The server  accepts an options object which is used to customize the resulting instance.
-
-```
-const server = new Server(parameters);
-```
 
 This options described in the table below:
 
@@ -28,20 +21,33 @@ This options described in the table below:
 <table>
 	<tbody>
 		<tr>
-			<th>Method</th>
-			<th>Description</th>
-			<th>Example</th>
+			<td>
+				<b>route(method, path, controller)</b>
+			</td>
 		</tr>
 		<tr>
-			<td rowspan=2>
-				server.route(method, path, controller)
-			</td>
 			<td> 
 				The "route()" method register controller to provided url path with specific method and return router target.
 			</td>
+		</tr>
+		<tr>
 			<td>
-				<pre> 
-server.route('GET', '/', (request, response) => {});
+				<pre lang='js'> 
+server.route('GET', '/', (ctx) => {});
+				</pre>
+			</td>
+		</tr>
+		<tr>
+			<td> 
+				The controller function receives context with current "target", "features", "request" and "response".
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<pre lang='js'> 
+server.route('GET', '/', (ctx) => {
+	ctx.response.send('foo');
+});
 				</pre>
 			</td>
 		</tr>
@@ -49,8 +55,10 @@ server.route('GET', '/', (request, response) => {});
 			<td> 
 				Method return a target for a route scope. Listeners which was added to it will be executed only on this specific route.
 			</td>
+		</tr>
+		<tr>
 			<td>
-				<pre> 
+				<pre lang='js'> 
 const route = server
 .route('GET', '/', () => {})
 .on('kernel.request', (event) => {
@@ -67,106 +75,154 @@ console.log(server.listenerCount('kernel.request'));
 				</pre>
 			</td>
 		</tr>
+	</tbody>
+	<tbody>
 		<tr>
 			<td>
-				server.get(path, handler)
+				<b>get(path, handler)</b>
 			</td>
+		</tr>
+		<tr>
 			<td> 
 				The "get()" is shorthand declaration for "route()" with an "GET" HTTP method.
 			</td>
+		</tr>
+		<tr>
 			<td>
-				<pre> 
+				<pre lang='js'> 
 server.get('/', () => {})
 				</pre>
 			</td>
 		</tr>
+	</tbody>
+	<tbody>
 		<tr>
 			<td>
-				server.head(path, handler)
+				<b>head(path, handler)</b>
 			</td>
+		</tr>
+		<tr>
 			<td> 
 				The "head()" is shorthand declaration for "route()" with an "HEAD" HTTP method.
-			</td>
-			<td>
-				<pre> 
-server.head('/', () => {})
-				</pre>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				server.post(path, handler)
+				<pre lang='js'> 
+server.head('/', () => {})
+				</pre>
 			</td>
+		</tr>	
+	</tbody>
+	<tbody>
+		<tr>
+			<td>
+				<b>post(path, handler)</b>
+			</td>
+		</tr>
+		<tr>
 			<td> 
 				The "post()" is shorthand declaration for "route()" with an "POST" HTTP method.
 			</td>
+		</tr>
+		<tr>
 			<td>
-				<pre> 
+				<pre lang='js'> 
 server.post('/', () => {})
 				</pre>
 			</td>
 		</tr>
+	</tbody>
+	<tbody>
 		<tr>
 			<td>
-				server.put(path, handler)
+				<b>put(path, handler)</b>
 			</td>
+		</tr>
+		<tr>
 			<td> 
 				The "put()" is shorthand declaration for "route()" with an "PUT" HTTP method.
 			</td>
+		</tr>
+		<tr>
 			<td>
-				<pre> 
+				<pre lang='js'> 
 server.put('/', () => {})
 				</pre>
 			</td>
 		</tr>
+	</tbody>
+	<tbody>
 		<tr>
 			<td>
-				server.delete(path, handler)
+				<b>delete(path, handler)</b>
 			</td>
+		</tr>
+		<tr>
 			<td> 
 				The "delete()" is shorthand declaration for "route()" with an "DELETE" HTTP method.
 			</td>
+		</tr>
+		<tr>
 			<td>
-				<pre> 
+				<pre lang='js'> 
 server.delete('/', () => {})
 				</pre>
 			</td>
 		</tr>
+	</tbody>
+	<tbody>
 		<tr>
 			<td>
-				server.options(path, handler)
+				<b>options(path, handler)</b>
 			</td>
+		</tr>
+		<tr>
 			<td> 
 				The "options()" is shorthand declaration for "route()" with an "OPTIONS" HTTP method.
 			</td>
+		</tr>
+		<tr>
 			<td>
-				<pre> 
+				<pre lang='js'> 
 server.options('/', () => {})
 				</pre>
 			</td>
 		</tr>
+	</tbody>
+	<tbody>
 		<tr>
 			<td>
-				server.patch(path, handler)
+				<b>patch(path, handler)</b>
 			</td>
+		</tr>
+		<tr>
 			<td> 
 				The "patch()" is shorthand declaration for "route()" with an "PATCH" HTTP method.
-			</td>
-			<td>
-				<pre> 
-server.patch('/', () => {})
-				</pre>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				server.callback()
+				<pre lang='js'> 
+server.patch('/', () => {})
+				</pre>
 			</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>
+				<b>callback()</b>
+			</td>
+		</tr>
+		<tr>
 			<td> 
 				Return a callback function suitable for the http.createServer() method to handle a request.
 			</td>
+		</tr>
+		<tr>
 			<td>
-				<pre> 
+				<pre lang='js'> 
 http.createServer(server.callback()).listen(3000)
 				</pre>
 			</td>

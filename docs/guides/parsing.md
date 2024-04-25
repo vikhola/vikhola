@@ -1,4 +1,4 @@
-[parsing_event]: https://github.com/vikhola/vikhola/blob/main/docs/api/events.md#kernelcritical
+[parsing_event]: https://github.com/vikhola/vikhola/blob/main/docs/api/events.md#kernelparse
 
 # Parsing
 
@@ -11,7 +11,7 @@ server.get('/', function(request, response) {
 })
 ```
 
-Exactly for parsing purposes application provides a special event called [`kernel.parse`][parsing_event], which fires immediately after `kernel.request`. This is the only place where can the request body can be actually changed. During another handlers, the request body will be read-only.
+Exactly for parsing purposes application provides a special event called [`kernel.parse`][parsing_event], which fires immediately after `kernel.request`. This is the only place where the request body can be actually changed. During another handlers, the request body will be read-only.
 
 ```js
 // GET / HTTP/1.1 

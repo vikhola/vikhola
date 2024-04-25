@@ -238,7 +238,7 @@ describe('Kernel test', function() {
                     assert.strictEqual(event instanceof ParseEvent, true)
                     assert.strictEqual(event.target, aRoute)
                     assert.strictEqual(event.request instanceof HttpRequest, true)
-                    assert.strictEqual(event.body, undefined)
+                    assert.strictEqual(event.body, event.request.raw)
                     assert.strictEqual(aRequestListenerCallback.mock.callCount(), 1)
                 })
         

@@ -72,17 +72,28 @@ describe('HttpRequest test', function() {
 
     describe('"body", option', function() {
 
-        it('should return the response body from the featrues', function() {
+        it('should return the request body from the featrues', function() {
             const expected = 'foo'
             const socket = new SocketMock()
             const request = new RequestMock({ socket }) 
             const aFeatures = new FeaturesMock()
             const aRequest = new HttpRequest(aFeatures, request, {})
             
-            aFeatures.set(kRequestBody, expected)
+            aFeatures.set(kRequestBody, { value: expected })
     
             assert.strictEqual(aRequest.body, expected)
         })
+
+        it('should return undefined if the request body is not defined', function() {
+            const expected = 'foo'
+            const socket = new SocketMock()
+            const request = new RequestMock({ socket }) 
+            const aFeatures = new FeaturesMock()
+            const aRequest = new HttpRequest(aFeatures, request, {})
+
+            assert.strictEqual(aRequest.body, undefined)
+        })
+
 
     })
 

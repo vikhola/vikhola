@@ -1,14 +1,51 @@
+[tasks]: https://github.com/vikhola/vikhola/blob/main/docs/guides/tasks.md
 [error_event]: https://github.com/vikhola/vikhola/blob/main/docs/api/events.md#kernelerror
 [warning_event]: https://github.com/vikhola/vikhola/blob/main/docs/api/events.md#kernelwarning
 [critical_event]: https://github.com/vikhola/vikhola/blob/main/docs/api/events.md#kernelcritical
 
 # Error Handling
 
-The application refers and describes how application handles exceptions.
+The documentation refers and describes how application handles exceptions.
 
-## Errors 
+## Listeners Errors
 
-When a controller or event listener throws an error before sending a response, this exception is handled at the error level. This layer has a default error handler that will handle the response based on the incoming exception. By default handler process exception as the Internal Server Error.
+When an error occurs during event propagation, the target where was emitted event will throw or reject error which depends whether synchronous or asynchronous listeners was triggered.
+
+```js
+target.on('foo', data => {
+	throw new Error('Oops');
+});
+    
+try {
+    target.emit({ name: 'foo' });
+} catch(error) {
+    // print: 'Error message is "Oops".'
+    console.log(`Error message is "Oops".`);
+}
+```
+
+If there is no guarantee which listeners will listen to the provided event and ensure that exception handles properly, it is recommended to use `async`/`await` keyword.
+
+```js
+target
+.on('foo', data => {
+	return Promise.resolve();
+})
+.on('foo', data => {
+	throw new Error('Oops');
+});
+    
+try {
+    await target.emit({ name: 'foo' });
+} catch(error) {
+    // print: 'Error message is "Oops".'
+    console.log(`Error message is "Oops".`);
+}
+```
+
+## Lifecycle Errors 
+
+When a controller or event listener throws unhandled error before sending a response, this exception is handled at the application error level. This layer has a default error handler that will handle the response based on the incoming exception. By default handler process exception as the Internal Server Error.
 
 ```js
 server.get('/', function() { 
@@ -20,7 +57,7 @@ server.get('/', function() {
 });
 ``` 
 
-Exceptions can define a `status` and a `response` props that will be assigned to the response by the error handler. The status property specifies the `statusCode` of the response.
+Exceptions can define a `status` and a `content` props that will be assigned to the response by the error handler. The status property specifies the `statusCode` of the response.
 
 ```js
 server.get('/', function() { 
@@ -84,12 +121,12 @@ server.get('/', function() {
 
 ## Warnings
 
-The warning level handles exceptions raised when during the response writing an error occurred. This level only runs when response has already been sent and does not have any handler that will handle an exception, providing [`kernel.warning`][warning_event] event that could be useful for logging.
+The warning level handle errors from events where  `captureRejection` property set to `true`, mostly its a [tasks] as `kernel.finish`, and its provides [`kernel.warning`][warning_event] for this purpose. This level, unlike `kernel.error`, does not have any default handler and could be useful mostly for logging.
 
 ```js
 server
-.on('kernel.request', function(event) { 
-	event.response.send(new Readable({ read: _ => { throw new Error('Oops'); } }));
+.on('kernel.finish', function(event) { 
+	throw new Error('Oops');
 })
 .on('kernel.warning', function(event) {
 	// print: Oops
@@ -99,7 +136,7 @@ server
 
 ## Critical
 
-The critical level handles exceptions that occurs during previous levels or `kernel.finish` event. As with the warning, this level runs after the response has already been sent and provides its own event, [`kernel.critical`][critical_event], which also can be useful for logging.
+The critical level handles exceptions that occurs during previous error levels or during response writing. This level provides its own event, [`kernel.critical`][critical_event], which as `kernel.warning` can be useful for logging.
 
 ```js
 server
